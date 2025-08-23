@@ -1,97 +1,91 @@
-# SimCLR-SAR-ATR-Project
-This is a SAR ATR project using the contrastive learning model SimCLR. This is a university project based on a paper:
-[Paper Link](https://www.sciencedirect.com/science/article/pii/S1877050922014697)
+# SimCLR SAR ATR Project
 
-[![Colab Notebook](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ysjMt-EeY1dCM2WFBuefTr4kaHS6_pmC?usp=sharing)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-## Introduction
-<p>In the field of automatic target recognition using synthetic aperture radar (SAR) images, deep learning methods face significant challenges when dealing with small sample sizes. Although deep learning has shown great potential in SAR image recognition, it often struggles with issues like overfitting and gradient explosion when the available data is limited. To address these challenges, this study trains a deep neural network on unlabeled SAR image data using self-supervised contrastive learning to create a network capable of extracting deeper features and achieving better representation. The pre-trained weights can then be transferred to small sample SAR data, in order to fine-tune the model to reduce overfitting in small sample SAR image recognition.
-</p>
+This is a **Synthetic Aperture Radar (SAR) Automatic Target Recognition (ATR)** project using the contrastive learning framework **SimCLR**.  
+It was developed as a **university research project** based on the following paper:  
+👉 [Target Recognition from SAR Images Using Deep Learning and Contrastive Pretraining](https://www.sciencedirect.com/science/article/pii/S1877050922014697)
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ysjMt-EeY1dCM2WFBuefTr4kaHS6_pmC?usp=sharing)
+
+---
+
+## 📌 Introduction
+
+In the field of **automatic target recognition using SAR images**, deep learning methods face significant challenges when dealing with **small sample sizes**. Although deep learning has shown great promise, it often suffers from:
+
+- **Overfitting** on limited data  
+- **Gradient explosion/instability** during training  
+
+To address these issues, this project applies **self-supervised contrastive learning (SimCLR)** on **unlabeled SAR data**. By pretraining a model to extract robust feature representations, the learned weights can then be fine-tuned on small labeled datasets, reducing overfitting and improving recognition accuracy.
+
 <p align="center">
   <img src="/media/TargetRecognitionFromSARImagesUsingDeepLearningExample_01.png" alt="SAR-ATR" title="SAR-ATR" width="500"/>
 </p>
 
-## Related Works and Challenges
-- Deep Learning in SAR Image Classification: Previous works have extensively explored the application of deep learning techniques, particularly convolutional neural networks (CNNs), to synthetic aperture radar (SAR) image classification. These methods have demonstrated significant improvements in accuracy and robustness compared to traditional machine learning techniques. However, deep learning models typically require large amounts of labeled data to achieve optimal performance, which is often a limitation in SAR datasets.
+---
 
-- Transfer Learning and Pre-training: To mitigate the challenge of limited labeled SAR data, several studies have employed transfer learning and pre-training strategies. Transfer learning involves pre-training a model on a large, related dataset and then fine-tuning it on a smaller, specific dataset. This approach leverages the feature extraction capabilities learned from the larger dataset, improving performance on the smaller, target dataset. Prior works have shown that transfer learning can be particularly effective for SAR image classification when the source and target domains are similar.
+## 🔎 Related Works & Challenges
 
-- Self-Supervised Learning: More recent studies have introduced self-supervised learning techniques to pre-train models using unlabeled data. In the context of SAR image analysis, self-supervised learning methods like contrastive learning have been used to learn robust feature representations without requiring labeled data. These methods have been shown to enhance model performance on downstream tasks by pre-training on large amounts of unlabeled SAR data and then fine-tuning on smaller labeled datasets.
+- **Deep Learning in SAR Classification:** CNN-based methods significantly improved SAR image recognition compared to traditional approaches, but require large labeled datasets.  
+- **Transfer Learning & Pretraining:** Pretraining on large datasets and fine-tuning on smaller ones improves performance, but domain gaps remain.  
+- **Self-Supervised Learning:** Recent methods (e.g., contrastive learning) leverage **unlabeled data** to learn robust features, improving downstream SAR ATR tasks.  
+- **Small-Sample Issues:** Overfitting and poor generalization remain common when SAR datasets are small, motivating augmentation, regularization, and SSL-based methods.  
 
-- Challenges with Small Sample Sizes: A recurring theme in related works is the difficulty of achieving high accuracy with deep learning models when working with small sample sizes, which is common in SAR image datasets. Overfitting and poor generalization are common issues due to the limited amount of training data. To address these problems, various techniques such as data augmentation, regularization, and transfer learning have been proposed and evaluated in previous studies.
-## Contrastive Learning
-<p>Contrastive learning is a type of self-supervised learning technique used to train models to learn useful representations of data without requiring labeled samples. The main idea behind contrastive learning is to learn representations by distinguishing between similar (positive) and dissimilar (negative) data pairs.<br>
+---
+
+## 🔗 Contrastive Learning
+
+Contrastive learning trains models to **learn representations without labels**, by distinguishing between **positive pairs** (similar data) and **negative pairs** (dissimilar data).  
+
+Key Concepts:
+- **Representation Learning:** Learn a feature space where similar points cluster and dissimilar points are distant.  
+- **Positive/Negative Pairs:** Positive = augmentations of the same image; Negative = augmentations from different images.  
+- **Contrastive Loss (InfoNCE/NT-Xent):** Minimizes distance between positive pairs while maximizing distance between negatives.  
+- **Data Augmentation:** Essential for creating diverse views (cropping, flipping, noise, jittering, etc.).  
+- **Self-Supervised Paradigm:** Labels are not needed—augmentations generate pseudo-labels.  
 
 <p align="center">
   <img src="/media/contrastive_standard.png" alt="Contrastive Learning" title="Contrastive Learning" width="500"/>
 </p>
 
-### Key Concepts of Contrastive Learning:
-- ####  Representation Learning: 
-The goal of contrastive learning is to learn a feature space where similar data points are closer together, and dissimilar points are further apart. This helps the model understand the underlying structure of the data.
+---
 
-- #### Positive and Negative Pairs:
-Positive pairs are composed of data points that are considered similar. For instance, two different augmentations of the same image.
-Negative pairs consist of data points that are different from each other. For example, augmentations of different images.
-- #### Contrastive Loss:
-The training objective of contrastive learning is to minimize the distance between the representations of positive pairs while maximizing the distance between negative pairs.
-A commonly used loss function in contrastive learning is the contrastive loss or InfoNCE loss, which encourages the model to increase the similarity of positive pairs and decrease the similarity of negative pairs.
-- #### Augmentations:
-Data augmentations are crucial in contrastive learning. For images, this could involve random cropping, flipping, color jittering, etc. The goal of augmentations is to create diverse versions of the same image to help the model learn invariant features.
+## ⚡ Proposed Solution: SimCLR
 
-- #### Self-Supervised Learning:
-Contrastive learning falls under self-supervised learning because it does not require labeled data. Instead, it uses data augmentations to generate pseudo-labels (positive and negative pairs) to train the model.</p>
+**SimCLR (Simple Framework for Contrastive Learning of Visual Representations)**, developed by Google Research, is applied to SAR ATR in this project.
 
-## Proposed Solution: SimCLR
-SimCLR (Simple Framework for Contrastive Learning of Visual Representations) is a popular self-supervised learning framework developed by researchers at Google Research for learning visual representations from unlabeled data. SimCLR leverages contrastive learning techniques to train models to distinguish between similar and dissimilar data points, effectively learning useful features without the need for manually labeled datasets.
 <p align="center">
   <img src="/media/1_GuoSK8ghNX11JUlq-j0LYw.png" alt="SimCLR" title="SimCLR" width="500"/>
 </p>
 
-### Self-Supervised Learning:
+### Core Components
+- **Self-Supervised Learning:** Leverages unlabeled SAR data by generating labels via augmentations.  
+- **Data Augmentation:** Each image is augmented twice (cropping, jittering, flipping, blurring) → forms positive pairs.  
+- **Neural Network Encoder:** A ResNet-based encoder extracts deep features.  
+- **Projection Head:** A small MLP maps encoded features into a space where contrastive loss is applied.  
+- **NT-Xent Loss:** Ensures augmented views of the same image align, while separating views of different images.  
+- **Training Dynamics:** Large batch sizes yield more negative pairs, critical for strong contrastive learning.  
+- **Downstream Use:** After training, the projection head is discarded; the encoder is fine-tuned on small labeled SAR ATR datasets.  
 
-SimCLR is a self-supervised learning method, meaning it does not rely on labeled data. Instead, it creates its own "labels" using transformations of the data.
-This approach is useful for scenarios where obtaining labeled data is expensive or impractical such as this case.
+---
 
-### Contrastive Learning:
+## 📂 Datasets
 
-At the core of SimCLR is contrastive learning, a technique where the model learns to differentiate between similar (positive) and dissimilar (negative) pairs of images.
-In SimCLR, positive pairs are created by applying two different random data augmentations to the same image. Negative pairs consist of augmentations from different images.
+### [MSTAR (8 Classes)](https://www.kaggle.com/datasets/atreyamajumdar/mstar-dataset-8-classes)
+- High-resolution SAR images of military targets and civilian vehicles.  
+- Widely used benchmark dataset for SAR ATR research.  
 
-### Data Augmentation:
-
-Data augmentation is crucial in SimCLR. Each image in the dataset is augmented twice using random transformations like cropping, color jittering, flipping, and blurring. This creates two different views (augmentations) of the same image, forming a positive pair.
-These augmentations help the model learn invariant features — features that remain consistent across different transformations of the same image.
-
-### Neural Network Encoder:
-
-SimCLR uses a deep neural network (typically a ResNet) as an encoder to transform input images into a lower-dimensional representation (feature vector).
-The encoder extracts meaningful features from the images, which are then used to distinguish between positive and negative pairs.
-
-### Projection Head:
-
-After the encoder, SimCLR uses a small neural network called the "projection head" that maps the encoded representations to a space where contrastive loss is applied.
-This projection head is typically a multi-layer perceptron (MLP) with one or two layers. The output of the projection head is the space where the similarity between pairs is calculated.
-This step helps improve the quality of the learned representations by focusing on the parts of the representation that are most useful for distinguishing between positive and negative pairs.
-
-### Contrastive Loss (NT-Xent Loss):
-
-SimCLR uses the normalized temperature-scaled cross-entropy loss (NT-Xent loss) as its contrastive loss function.
-For each image in a batch, the model tries to maximize the agreement between positive pairs (two augmented versions of the same image) while minimizing the agreement between negative pairs (augmented versions of different images).
-This loss function pushes similar images closer in the feature space and dissimilar images further apart.
-
-### Training:
-
-The model is trained using a large batch size to ensure a sufficient number of negative pairs for each positive pair, which is critical for effective contrastive learning.
-During training, the encoder and projection head learn to create a feature space where similar images are grouped closely together, and different images are spread apart.
-
-### Representation Learning:
-
-After training, the projection head is typically discarded, and the encoder is used as a pre-trained model for various downstream tasks such as image classification, object detection, or segmentation.
-The representations learned through SimCLR are general and can be fine-tuned on smaller labeled datasets for specific tasks.
-
-## Datasets
-### [MSTAR 8 Classes](https://www.kaggle.com/datasets/atreyamajumdar/mstar-dataset-8-classes)
-The MSTAR (Moving and Stationary Target Acquisition and Recognition) dataset is a publicly available synthetic aperture radar (SAR) dataset that contains high-resolution SAR images of various military targets and civilian vehicles. It is widely used in research for automatic target recognition (ATR) and SAR image processing.
 ### [SARScope](https://www.kaggle.com/datasets/kailaspsudheer/sarscope-unveiling-the-maritime-landscape)
-This dataset is designed for researchers and developers interested in Synthetic Aperture Radar (SAR) ship detection and instance segmentation. It combines the advantages of both HRSID and OPEN-SSDD datasets, offering a diverse and robust collection of data ,taking the total images count to 6735.
+- Designed for **SAR ship detection & segmentation**.  
+- Combines HRSID + OPEN-SSDD → **6735 images**.  
+- Provides diversity and robustness for maritime ATR tasks.  
+
+---
+
+## 📊 Results (Planned/Expected)
+
+- Training convergence curves *(add plots here)*  
+- Feature embeddings visualization *(t-SNE/UMAP plots)*  
+- Classification accuracy on small labeled SAR datasets *(add table here)*  
